@@ -1,0 +1,31 @@
+{
+  "name": "diagram-app",
+  "version": "1.0.0",
+  "description": "Collaborative real-time diagramming web application",
+  "main": "src/app.js",
+  "scripts": {
+    "start": "next start",
+    "dev": "nodemon ./src/app.js",
+    "build": "next build",
+    "test": "jest",
+    "lint": "eslint ."
+  },
+  "author": "Your Name",
+  "license": "MIT",
+  "dependencies": {
+    "express": "^4.17.1",
+    "mongoose": "^6.1.4",
+    "jsonwebtoken": "^8.5.1",
+    "bcrypt": "^5.0.1",
+    "axios": "^0.24.0",
+    "morgan":"*",
+    "helmet":"*",
+    "cors":"*"
+  },
+  "devDependencies": {
+    "jest": "^27.4.7",
+    "eslint": "^8.5.0",
+    "nodemon":"*"
+  }
+}
+

@@ -1,6 +1,3 @@
-
-
-
 const Job = require('../models/jobModel');
 
 /**
@@ -23,7 +20,7 @@ const createJob = async (jobData) => {
  * @param {string} jobId - The ID of the job.
  * @returns {Promise<Object>} - The job.
  */
-const getJob = async (jobId) => {
+const getJobById = async (jobId) => {
   try {
     const job = await Job.findById(jobId);
     if (!job) {
@@ -41,7 +38,7 @@ const getJob = async (jobId) => {
  * @param {Object} jobData - The updated data for the job.
  * @returns {Promise<Object>} - The updated job.
  */
-const updateJob = async (jobId, jobData) => {
+const updateJobById = async (jobId, jobData) => {
   try {
     const job = await Job.findByIdAndUpdate(jobId, jobData, { new: true });
     if (!job) {
@@ -58,7 +55,7 @@ const updateJob = async (jobId, jobData) => {
  * @param {string} jobId - The ID of the job.
  * @returns {Promise<void>}
  */
-const deleteJob = async (jobId) => {
+const deleteJobById = async (jobId) => {
   try {
     const job = await Job.findByIdAndDelete(jobId);
     if (!job) {
@@ -72,8 +69,8 @@ const deleteJob = async (jobId) => {
 
 module.exports = {
   createJob,
-  getJob,
-  updateJob,
-  deleteJob,
+  getJobById,
+  updateJobById,
+  deleteJobById,
 };
 

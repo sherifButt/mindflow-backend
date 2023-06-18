@@ -1,4 +1,4 @@
-const AvatarAPI = require('../../services/avatarAPI');
+const AvatarAPI = require('../../utils/avatarAPI');
 
 /**
  * Creates an avatar for a user.

@@ -1,19 +1,19 @@
-services:
-  mindflow:
-    image: your-docker-image:latest
-    ports:
-      - 3000:3000
-    environment:
-      - NODE_ENV=production
-    volumes:
-      - ./data:/app/data
-    depends_on:
-      - database
-  database:
-    image: postgres:latest
-    environment:
-      - POSTGRES_USER=mindflow
-      - POSTGRES_PASSWORD=mindflow
-      - POSTGRES_DB=mindflow
-    volumes:
-      - ./pgdata:/var/lib/postgresql/data
+utils:
+   mindflow:
+      image: your-docker-image:latest
+      ports:
+         - 3000:3000
+      environment:
+         - NODE_ENV=production
+      volumes:
+         - ./data:/app/data
+      depends_on:
+         - database
+   database:
+      image: postgres:latest
+      environment:
+         - POSTGRES_USER=mindflow
+         - POSTGRES_PASSWORD=mindflow
+         - POSTGRES_DB=mindflow
+      volumes:
+         - ./pgdata:/var/lib/postgresql/data

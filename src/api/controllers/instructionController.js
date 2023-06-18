@@ -21,7 +21,7 @@ const createInstruction = async (instructionData) => {
  * @param {string} instructionId - The ID of the instruction to retrieve
  * @returns {Promise<Object>} - The retrieved instruction
  */
-const getInstruction = async (instructionId) => {
+const getInstructionById = async (instructionId) => {
   try {
     const instruction = await Instruction.findById(instructionId);
     if (!instruction) {
@@ -73,7 +73,7 @@ const deleteInstruction = async (instructionId) => {
 
 module.exports = {
   createInstruction,
-  getInstruction,
+  getInstructionById,
   updateInstruction,
   deleteInstruction,
 };

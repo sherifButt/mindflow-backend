@@ -1,7 +1,4 @@
-
-
-
-
+const mongoose = require('mongoose');
 const jobSchema = new mongoose.Schema({
   job_id: {
     type: Number,

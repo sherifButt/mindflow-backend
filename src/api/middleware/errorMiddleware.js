@@ -1,4 +1,5 @@
-const handleError = require('../utils/errorHandler');
+const errorHandler = require("../../utils/errorHandler");
+
 /**
  * Middleware to handle errors
  * @param {Error} err - The error object
@@ -11,7 +12,7 @@ const handleRouteError = (err, req, res, next) => {
   console.error(err);
 
   // Handle the error using the error controller
-  const errorResponse = handleError(err);
+  const errorResponse = errorHandler(err);
 
   // Set the status code and send the error response
   res.status(errorResponse.statusCode).json({

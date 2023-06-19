@@ -52,5 +52,32 @@ router.post('/auth/login', authController.login);
  */
 router.post('/auth/logout', authController.logout);
 
+/**
+ * @swagger
+ * /user/resetPassword:
+ *   post:
+ *     summary: Reset user password
+ *     tags: [User]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               email:
+ *                 type: string
+ *     responses:
+ *       200:
+ *         description: Password reset email sent successfully
+ *       400:
+ *         description: Invalid request body
+ *       404:
+ *         description: User not found
+ *       500:
+ *         description: Internal server error
+ */
+router.post('/auth/resetPassword', authController.resetPassword);
+
 module.exports = router;
 

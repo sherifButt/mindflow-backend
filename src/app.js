@@ -1,10 +1,12 @@
+require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
 const morgan = require('morgan');
 const helmet = require('helmet');
 const routes = require('./api/routes');
 const handleRouteError = require('./api/middleware/errorMiddleware');
-
+const {connectPostgreSQL}=require('./config/db');
+connectPostgreSQL();
 
 const app = express();
 
@@ -14,13 +16,13 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(morgan('dev'));
 app.use(helmet()); 
-app.use(handleRouteError)
+app.use(handleRouteError) 
 
 // Routes
 app.use('/api', routes);
 
 // Start the server
 const port = process.env.PORT || 3000;
-app.listen(port, () => {
+app.listen(port, () => {``
   console.log(`Server is running on port ${port}`);
 });

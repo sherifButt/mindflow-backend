@@ -1,7 +1,7 @@
 
 
 
-
+const mongoose = require('mongoose');
 const diagramSchema = new mongoose.Schema({
   diagramData: {
     type: String,

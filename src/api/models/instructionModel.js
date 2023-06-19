@@ -1,7 +1,7 @@
 
 
 
-
+const mongoose = require('mongoose');
 const instructionSchema = new mongoose.Schema({
   diagramId: {
     type: mongoose.Schema.Types.ObjectId,

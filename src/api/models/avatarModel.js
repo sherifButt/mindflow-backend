@@ -1,7 +1,4 @@
-
-
-
-
+const mongoose = require('mongoose');
 const avatarSchema = new mongoose.Schema({
   image_url: {
     type: String,

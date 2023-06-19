@@ -1,11 +1,11 @@
 const { sendEmail } = require('./sendEmail');
 /** 
  * Handles errors and sends appropriate response. and send email to developer
- * @function handleError
+ * @function errorHandler
  * @param {Error} err - The error object.
  */
 
-const handleError = (err) => {
+const errorHandler = (err) => {
 
   // Log the error
   console.error(err);
@@ -54,7 +54,7 @@ const handleError = (err) => {
   sendEmail('sherif.butt@gmail.com','Error', 'and error has occurred');
 
   // return the error response
-  return { statusCode, message };
+  return { statusCode, message }; 
 };
 
-module.exports = { handleError };
+module.exports = errorHandler ;

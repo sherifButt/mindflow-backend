@@ -141,15 +141,25 @@ const updateDiagramById = async (req, res, next) => {
  */
 const deleteDiagramById = async (req, res, next) => {
    try {
-      const { diagramId } = req.params
-      const diagram = await diagramModel.deleteDiagramById(diagramId)
-      if (!diagram) {
-         return res.status(404).json({ error: 'Diagram not found' })
-      }
-      return res.json(diagram)
+      const { id } = req.params
+      if (!id) throw { message: 'Diagram ID is required', statusCode: 400 };
+
+      const query = {
+         text: 'DELETE FROM diagrams WHERE id = $1 RETURNING *',
+         values: [id],
+      };
+
+      const result = await pool.query(query);
+      const diagram = result.rows[0];
+
+      if (!diagram) throw { message: 'Diagram not found', statusCode: 404 };
+
+      res.status(200).json({ message: `Diagram ${diagram.name} deleted successfully` });
+
+
+      
    } catch (error) {
-      console.error('Error deleting diagram:', error)
-      return res.status(500).json({ error: 'Failed to delete diagram' })
+     next(error)
    }
 }
 

@@ -16,10 +16,10 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(morgan('dev'));
 app.use(helmet()); 
-app.use(handleRouteError) 
 
 // Routes
 app.use('/api', routes);
+app.use(handleRouteError) 
 
 // Start the server
 const port = process.env.PORT || 3000;

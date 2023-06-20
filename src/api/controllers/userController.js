@@ -1,7 +1,3 @@
-
-
-
-
 /**
  * Registers a new user.
  * @param {string} email - The email of the user.

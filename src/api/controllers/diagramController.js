@@ -8,14 +8,22 @@ const gpt4API = require('../../utils/gpt4API')
  */
 const createDiagram = async (req, res) => {
    try {
-      const { diagramData, userId } = req.body
-      const diagram = await diagramModel.createDiagram(diagramData, userId)
-      return res.status(201).json(diagram)
+     const { diagramData, userId } = req.body;
+ 
+     const query = {
+       text: 'INSERT INTO diagrams(diagram_data, name, slug, description, created_at, updated_at, created_by, sharing_settings) VALUES($1, $2, $3, $4, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, $5, $6) RETURNING *',
+       values: [JSON.stringify(diagramData.data), diagramData.name, diagramData.slug, diagramData.description, userId, diagramData.sharing_settings],
+     };
+ 
+     const result = await pool.query(query);
+     const diagram = result.rows[0];
+ 
+     return res.status(201).json(diagram);
    } catch (error) {
-      console.error('Error creating diagram:', error)
-      return res.status(500).json({ error: 'Failed to create diagram' })
+     console.error('Error creating diagram:', error);
+     return res.status(500).json({ error: 'Failed to create diagram' });
    }
-}
+ };
 
 /**
  * Retrieves a diagram by its ID.

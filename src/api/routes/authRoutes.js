@@ -1,5 +1,3 @@
-
-
 const express = require('express');
 const router = express.Router();
 const authController = require('../controllers/authController');
@@ -36,7 +34,34 @@ const authController = require('../controllers/authController');
  *       500:
  *         description: Internal server error
  */
-router.post('/auth/login', authController.login);
+router.post('/login', authController.login);
+
+/**
+ * @swagger
+ * /auth/register:
+ *   post:
+ *     summary: Register user
+ *     tags: [Authentication]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               email:
+ *                 type: string
+ *               password:
+ *                 type: string
+ *     responses:
+ *       200:
+ *         description: User Registered in successfully
+ *       400:
+ *         description: Invalid email or password
+ *       500:
+ *         description: Internal server error
+ */
+router.post('/register', authController.register);
 
 /**
  * @swagger
@@ -50,7 +75,7 @@ router.post('/auth/login', authController.login);
  *       500:
  *         description: Internal server error
  */
-router.post('/auth/logout', authController.logout);
+router.post('/logout', authController.logout);
 
 /**
  * @swagger
@@ -77,7 +102,7 @@ router.post('/auth/logout', authController.logout);
  *       500:
  *         description: Internal server error
  */
-router.post('/auth/resetPassword', authController.resetPassword);
+router.post('/resetPassword', authController.resetPassword);
 
 module.exports = router;
 

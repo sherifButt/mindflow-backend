@@ -27,7 +27,7 @@ const pool = new Pool({
 
 
 // connect to postgresql database via pg
-const connectPostgreSQL = async () => {
+const connectPostgreSQL = async () => { 
   try {
     const client = await pool.connect();
     console.log(`Connected to the database via ${process.env.PG_DB} on port ${process.env.PG_PORT}`);
@@ -37,7 +37,7 @@ const connectPostgreSQL = async () => {
   }
 };
 
-module.exports = {connectMongoDB, connectPostgreSQL};
+module.exports = {connectMongoDB, connectPostgreSQL,pool};
 
 
 

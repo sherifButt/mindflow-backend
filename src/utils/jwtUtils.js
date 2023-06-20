@@ -1,6 +1,4 @@
-
-
-
+const jwt = require('jsonwebtoken');
 
 /**
  * Generates a JWT token for the provided payload.
@@ -9,7 +7,7 @@
  * @param {number} expiresIn - The expiration time of the token in seconds.
  * @returns {string} - The generated JWT token.
  */
-function generateToken(payload, secret, expiresIn) {
+function generateToken(payload, secret = process.env.JWT_SECRET_KEY, expiresIn = process.env.JWT_EXPIRATION_TIME) {
   return jwt.sign(payload, secret, { expiresIn });
 }
 
@@ -19,7 +17,7 @@ function generateToken(payload, secret, expiresIn) {
  * @param {string} secret - The secret key used to verify the token.
  * @returns {object} - The decoded payload if the token is valid, otherwise throws an error.
  */
-function verifyToken(token, secret) {
+function verifyToken(token, secret = process.env.JWT_SECRET_KEY) {
   return jwt.verify(token, secret);
 }
 

@@ -1,3 +1,4 @@
+const jwtUtils = require('../utils/jwtUtils');
 /**
  * Middleware function to verify the JWT token in the request headers.
  * If the token is valid, it sets the user object in the request and calls the next middleware.
@@ -8,7 +9,8 @@
  */
 const verifyToken = (req, res, next) => {
   // Get the token from the request headers
-  const token = req.headers.authorization;
+  const authHeader = req.headers['authorization'];
+    const token = authHeader && authHeader.split(' ')[1];
 
   if (!token) {
     return res.status(401).json({ message: 'Unauthorized' });
@@ -18,15 +20,16 @@ const verifyToken = (req, res, next) => {
     // Verify the token
     const decoded = jwtUtils.verifyToken(token);
 
+    if(!decoded) return res.status(403).json({ message: 'Forbidden' });
+
     // Set the user object in the request
     req.user = decoded;
 
     // Call the next middleware
     next();
-  } catch (error) {
-    return res.status(401).json({ message: 'Unauthorized' });
+  } catch (err) {
+    next(err)
   }
 };
 
 module.exports = verifyToken;
-

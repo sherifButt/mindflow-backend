@@ -16,6 +16,8 @@ const handleRouteError = (err, req, res, next) => {
 
   // Set the status code and send the error response
   res.status(errorResponse.statusCode).json({
+    success: false,
+    statusCode: errorResponse.statusCode,
     error: errorResponse.message,
   });
 };

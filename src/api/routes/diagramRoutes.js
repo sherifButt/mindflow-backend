@@ -54,7 +54,7 @@ const diagramController = require('../controllers/diagramController');
  *       500:
  *         description: Internal server error
  */
-router.post('/diagram/create', diagramController.createDiagram);
+router.post('/', diagramController.createDiagram);
 
 /**
  * @swagger
@@ -168,9 +168,10 @@ router.post('/diagram/create', diagramController.createDiagram);
  *       500:
  *         description: Internal server error
  */
-router.get('/diagram/:id', diagramController.getDiagramById);
-router.put('/diagram/:id', diagramController.updateDiagramById);
-router.delete('/diagram/:id', diagramController.deleteDiagramById);
+router.get('/', diagramController.getDiagramById);
+router.get('/:id', diagramController.getDiagramById);
+router.put('/:id', diagramController.updateDiagramById);
+router.delete('/:id', diagramController.deleteDiagramById);
 
 module.exports = router;
 

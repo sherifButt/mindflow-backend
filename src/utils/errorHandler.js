@@ -12,7 +12,7 @@ const errorHandler = (err) => {
 
   // Default error status and message
   let statusCode = 500;
-  let message = 'Internal Server Error';
+  let message = 'Internal Server Error: '+err.message;
 
   // Check if the error has a status code and message
   if (err.statusCode && err.message) {
@@ -51,7 +51,7 @@ const errorHandler = (err) => {
   }
 
   // send email to developer
-  sendEmail('sherif.butt@gmail.com','Error', 'and error has occurred');
+  // sendEmail('sherif.butt@gmail.com','Error', 'and error has occurred');
 
   // return the error response
   return { statusCode, message }; 

@@ -86,19 +86,40 @@ const getAllDiagrams = async (req, res, next) => {
  */
 const updateDiagramById = async (req, res, next) => {
    try {
-      const { id, diagram_data, name, slug, description, created_by, sharing_settings } = req.body;
-     
+      const { id, ...fieldsToUpdate } = req.body;
       if (!id) throw { message: 'Diagram ID is required', statusCode: 400 };
-      if (!diagram_data) throw { message: 'Diagram data is required', statusCode: 400 };
 
-      const query = {
-         text: 'UPDATE diagrams SET diagram_data = $1, name=$2, slug=$3, description=$4, updated_at=CURRENT_TIMESTAMP,created_by=$5, sharing_settings=$6 WHERE id = $7 RETURNING *',
-         values: [JSON.stringify(diagram_data), name, slug, description, created_by, sharing_settings, id],
+      // Construct the update query dynamically
+      let updateStatement = 'UPDATE diagrams SET';
+      const values = [];
+      let valueIndex = 1;
+      
+      for (const [key, value] of Object.entries(fieldsToUpdate)) {
+         updateStatement += ` ${key} = $${valueIndex},`;
+         values.push(value);
+         valueIndex++;
       }
 
-      const result = await pool.query(query);
+      // Add updated_at manually if it's not already included
+      if (!fieldsToUpdate.hasOwnProperty('updated_at')) {
+         updateStatement += ` updated_at = CURRENT_TIMESTAMP,`;
+      }
+      
+      // Remove trailing comma and append the WHERE clause
+      updateStatement = updateStatement.slice(0, -1);
+      updateStatement += ` WHERE id = $${valueIndex} RETURNING *`;
+      values.push(id);
+
+      const result = await pool.query({
+         text: updateStatement,
+         values: values,
+      });
+
       const diagram = result.rows[0];
-      diagram.diagram_data = JSON.parse(diagram.diagram_data);
+
+      if (diagram && diagram.diagram_data) {
+         diagram.diagram_data = JSON.parse(diagram.diagram_data);
+      }
 
       if (!diagram) {
          throw { message: 'Diagram not found', statusCode: 404 };
@@ -109,6 +130,8 @@ const updateDiagramById = async (req, res, next) => {
       next(error)
    }
 }
+
+
 
 /**
  * Deletes a diagram by its ID.

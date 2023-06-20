@@ -168,7 +168,7 @@ router.post('/', diagramController.createDiagram);
  *       500:
  *         description: Internal server error
  */
-router.get('/', diagramController.getDiagramById);
+router.get('/', diagramController.getAllDiagrams);
 router.get('/:id', diagramController.getDiagramById);
 router.put('/:id', diagramController.updateDiagramById);
 router.delete('/:id', diagramController.deleteDiagramById);

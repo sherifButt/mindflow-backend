@@ -26,10 +26,10 @@ const login = async (req, res, next) => {
     if (!match) throw { error: 'Invalid password', statusCode: 400 };
 
     // Generate JWT token
-    // const token = jwtUtils.generateToken(user.user_id);
-    const token = jwtUtils.generateToken({ userId: user.user_id, email: user.email });
+    // const token = jwtUtils.generateToken(user.id);
+    const token = jwtUtils.generateToken({ userId: user.id, email: user.email });
     // store the token in the database
-    await pool.query('UPDATE users SET jwt=$1 WHERE user_id = $2', [token, user.user_id])
+    await pool.query('UPDATE users SET jwt=$1 WHERE id = $2', [token, user.id])
 
     // Return the token
     return res.status(200).json({ token });
@@ -137,21 +137,19 @@ const register = async (req, res, next) => {
 
     // generate JWT token
     const user = result.rows[0];
-    const token = jwtUtils.generateToken({ userId: user.user_id, email: user.email });
+    const token = jwtUtils.generateToken({ userId: user.id, email: user.email });
 
     // store the token in the database
-    await pool.query('UPDATE users SET jwt=$1 WHERE user_id = $2', [token, user.user_id])
+    await pool.query('UPDATE users SET jwt=$1 WHERE id = $2', [token, user.id])
 
     // Send the token in the response
-    res.status(201).json({ token, userId: user.user_id });
+    res.status(201).json({ token, userId: user.id });
 
   } catch (error) {
     // console.error('Error registering user:', error.message); 
     next(error);
   }
 };
-
-
 
 module.exports = {
   login,

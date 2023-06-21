@@ -86,7 +86,8 @@ const getAllDiagrams = async (req, res, next) => {
  */
 const updateDiagramById = async (req, res, next) => {
    try {
-      const { id, ...fieldsToUpdate } = req.body;
+      const { id } = req.params;
+      const { ...fieldsToUpdate } = req.body;
       if (!id) throw { error: 'Diagram ID is required', statusCode: 400 };
 
       // Construct the update query dynamically

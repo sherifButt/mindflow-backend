@@ -1,6 +1,6 @@
 const express = require('express')
 const router = express.Router();
-const instructionController = require('../controllers/instructionController');
+const instructionTypeController = require('../controllers/instructionTypeController');
 
 /**
  * @swagger
@@ -44,7 +44,7 @@ const instructionController = require('../controllers/instructionController');
  *             schema:
  *               $ref: '#/components/schemas/Instruction'
  */
-router.post('/instruction/create', instructionController.createInstruction);
+router.post('/', instructionTypeController.createInstructionType);
 
 /**
  * @swagger
@@ -123,9 +123,10 @@ router.post('/instruction/create', instructionController.createInstruction);
  *       404:
  *         description: Instruction not found
  */
-router.get('/instruction/:id', instructionController.getInstructionById);
-router.put('/instruction/:id', instructionController.updateInstruction);
-router.delete('/instruction/:id', instructionController.deleteInstruction);
-
+router.get('/', instructionTypeController.getAllInstructionTypes);
+router.get('/:id', instructionTypeController.getInstructionTypeById);
+router.put('/:id', instructionTypeController.updateInstructionTypeById);
+router.delete('/:id', instructionTypeController.deleteInstructionTypeById);
+ 
 module.exports = router;
 

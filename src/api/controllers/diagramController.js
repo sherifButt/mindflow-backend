@@ -10,7 +10,8 @@ const gpt4API = require('../../utils/gpt4API')
  */
 const createDiagram = async (req, res, next) => {
    try {
-      const { diagramData, userId } = req.body;
+      const { userId } = req.user;
+      const diagramData = req.body;
 
       if (!diagramData || !diagramData.data || !diagramData.name || !diagramData.slug || !diagramData.description || !diagramData.sharing_settings) throw { error: 'Diagram data, name, slug, description, and sharing settings are required', statusCode: 400 };
       if (!userId || !diagramData.created_by) throw { error: 'User ID is required', statusCode: 400 };
@@ -68,13 +69,38 @@ const getDiagramById = async (req, res, next) => {
  */
 const getAllDiagrams = async (req, res, next) => {
    try {
-      const result = await pool.query('SELECT * FROM diagrams');
-      const diagrams = result.rows;
-      if (!diagrams) throw { error: 'Diagram not found', statusCode: 404 };
-      diagrams.map(diagram => diagram.diagram_data = JSON.parse(diagram.diagram_data))
-      res.status(200).json(diagrams);
+       const page = parseInt(req.query.page) || 1;  // set default page to 1 if it's not available
+       const limit = parseInt(req.query.limit) || 20;  // set default limit to 20 if it's not available
+       const offset = (page - 1) * limit;
+
+       const result = await pool.query('SELECT COUNT(*) OVER() as total, * FROM diagrams ORDER BY id LIMIT $1 OFFSET $2', [limit, offset]);
+       const diagrams = result.rows;
+
+       if (!diagrams.length) throw { error: 'No diagrams found', statusCode: 404 };
+
+       diagrams.map(diagram => diagram.diagram_data = JSON.parse(diagram.diagram_data))
+
+       const totalPages = Math.ceil(diagrams[0].total / limit);
+
+       // Construct a pagination object
+       const pagination = {
+           totalItems: diagrams[0].total,
+           currentPage: page,
+           pageSize: limit,
+           totalPages: totalPages,
+           nextPage: page < totalPages ? page + 1 : null,
+           prevPage: page > 1 ? page - 1 : null
+       }
+
+       // Remove total from the results
+       diagrams.map(diagram => delete diagram.total);
+
+       res.status(200).json({
+           pagination: pagination,
+           results: diagrams
+       });
    } catch (error) {
-      next(error);
+       next(error);
    }
 }
 
@@ -131,8 +157,6 @@ const updateDiagramById = async (req, res, next) => {
       next(error)
    }
 }
-
-
 
 /**
  * Deletes a diagram by its ID.

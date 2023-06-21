@@ -8,7 +8,8 @@ const { pool } = require('../../config/db');
  */
 const createInstructionType = async (req, res, next) => {
    try {
-      const { instructionTypeData, userId } = req.body;
+      const { userId } = req.user;
+      const instructionTypeData = req.body;
 
       if (!instructionTypeData || !instructionTypeData.name || !instructionTypeData.slug || !instructionTypeData.description || !instructionTypeData.parameters || !instructionTypeData.priority || !instructionTypeData.max_retry) throw { error: 'Instruction type data (name, slug, description, parameters, priority, and max retry) are required', statusCode: 400 };
       if (!userId) throw { error: 'User ID is required', statusCode: 400 };
@@ -68,14 +69,40 @@ const getInstructionTypeById = async (req, res, next) => {
  */
 const getAllInstructionTypes = async (req, res, next) => {
    try {
-      const result = await pool.query('SELECT * FROM instruction_types');
+      const page = parseInt(req.query.page) || 1;  // set default page to 1 if it's not available
+      const limit = parseInt(req.query.limit) || 20;  // set default limit to 20 if it's not available
+      const offset = (page - 1) * limit;
+
+      const result = await pool.query('SELECT COUNT(*) OVER() as total, * FROM instruction_types ORDER BY id LIMIT $1 OFFSET $2', [limit, offset]);
       const instructionTypes = result.rows;
-      if (!instructionTypes) throw { error: 'Instruction not found', statusCode: 404 };
-      instructionTypes.map(instructionType => instructionType.parameters = JSON.parse(instructionType.parameters))
-      res.status(200).json(instructionTypes);
-   } catch (error) {
+
+      if (!instructionTypes.length) throw { error: 'No instructionTypes found', statusCode: 404 };
+
+      instructionTypes.map(diagram => diagram.parameters = JSON.parse(diagram.parameters))
+
+      const totalPages = Math.ceil(instructionTypes[0].total / limit);
+
+      // Construct a pagination object
+      const pagination = {
+          totalItems: instructionTypes[0].total,
+          currentPage: page,
+          pageSize: limit,
+          totalPages: totalPages,
+          nextPage: page < totalPages ? page + 1 : null,
+          prevPage: page > 1 ? page - 1 : null
+      }
+
+      // Remove total from the results
+      instructionTypes.map(diagram => delete diagram.total);
+
+      res.status(200).json({
+          pagination: pagination,
+          results: instructionTypes
+      });
+  } catch (error) {
       next(error);
-   }
+  }
+  
 }
 
 /**

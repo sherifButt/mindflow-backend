@@ -1,4 +1,4 @@
-const jwtUtils = require('../utils/jwtUtils');
+const jwtUtils = require('../../utils/jwtUtils');
 
 const authReadOnlyMiddleware = function (req, res, next) {
     // pass if the request is a GET request

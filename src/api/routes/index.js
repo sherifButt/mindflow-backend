@@ -7,14 +7,15 @@ const avatarRoutes = require('./avatarRoutes');
 const diagramRoutes = require('./diagramRoutes');
 const instructionRoutes = require('./instructionTypeRoutes');
 const jobRoutes = require('./jobRoutes');
+const authReadOnlyMiddleware = require('../middleware/authReadOnlyMiddleware');
 
 
 routes.use('/auth', authRoutes);
-routes.use('/users', userRoutes);
-routes.use('/avatars', avatarRoutes);
-routes.use('/diagrams', diagramRoutes);
-routes.use('/instruction-types', instructionRoutes);
-routes.use('/jobs', jobRoutes);
+routes.use('/users',authReadOnlyMiddleware, userRoutes);
+routes.use('/avatars',authReadOnlyMiddleware, avatarRoutes);
+routes.use('/diagrams',authReadOnlyMiddleware, diagramRoutes);
+routes.use('/instruction-types',authReadOnlyMiddleware, instructionRoutes);
+routes.use('/jobs',authReadOnlyMiddleware, jobRoutes);
 
 
 module.exports = routes;

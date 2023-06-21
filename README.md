@@ -79,6 +79,7 @@ This project is licensed under the [MIT License](LICENSE).
 
 ```mermaid
 sequenceDiagram
+  numbered
   participant U as User
   participant F as Frontend
   participant B as Backend

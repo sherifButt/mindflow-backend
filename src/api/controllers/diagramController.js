@@ -12,8 +12,8 @@ const createDiagram = async (req, res, next) => {
    try {
       const { diagramData, userId } = req.body;
 
-      if (!diagramData || !diagramData.data || !diagramData.name || !diagramData.slug || !diagramData.description || !diagramData.sharing_settings) throw { message: 'Diagram data, name, slug, description, and sharing settings are required', statusCode: 400 };
-      if (!userId || !diagramData.created_by) throw { message: 'User ID is required', statusCode: 400 };
+      if (!diagramData || !diagramData.data || !diagramData.name || !diagramData.slug || !diagramData.description || !diagramData.sharing_settings) throw { error: 'Diagram data, name, slug, description, and sharing settings are required', statusCode: 400 };
+      if (!userId || !diagramData.created_by) throw { error: 'User ID is required', statusCode: 400 };
 
       const query = {
          text: 'INSERT INTO diagrams(diagram_data, name, slug, description, created_at, updated_at, created_by, sharing_settings) VALUES($1, $2, $3, $4, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, $5, $6) RETURNING *',
@@ -39,7 +39,7 @@ const createDiagram = async (req, res, next) => {
 const getDiagramById = async (req, res, next) => {
    try {
       const { id } = req.params
-      if (!id) throw { message: 'Diagram ID is required', statusCode: 400 };
+      if (!id) throw { error: 'Diagram ID is required', statusCode: 400 };
 
       const query = {
          text: 'SELECT * FROM diagrams WHERE id = $1',
@@ -48,7 +48,7 @@ const getDiagramById = async (req, res, next) => {
 
       const result = await pool.query(query);
       const diagram = result.rows[0];
-      if (!diagram) throw { message: 'Diagram not found', statusCode: 404 };
+      if (!diagram) throw { error: 'Diagram not found', statusCode: 404 };
 
       diagram.diagram_data = JSON.parse(diagram.diagram_data);
 
@@ -70,7 +70,7 @@ const getAllDiagrams = async (req, res, next) => {
    try {
       const result = await pool.query('SELECT * FROM diagrams');
       const diagrams = result.rows;
-      if (!diagrams) throw { message: 'Diagram not found', statusCode: 404 };
+      if (!diagrams) throw { error: 'Diagram not found', statusCode: 404 };
       diagrams.map(diagram => diagram.diagram_data = JSON.parse(diagram.diagram_data))
       res.status(200).json(diagrams);
    } catch (error) {
@@ -87,7 +87,7 @@ const getAllDiagrams = async (req, res, next) => {
 const updateDiagramById = async (req, res, next) => {
    try {
       const { id, ...fieldsToUpdate } = req.body;
-      if (!id) throw { message: 'Diagram ID is required', statusCode: 400 };
+      if (!id) throw { error: 'Diagram ID is required', statusCode: 400 };
 
       // Construct the update query dynamically
       let updateStatement = 'UPDATE diagrams SET';
@@ -122,7 +122,7 @@ const updateDiagramById = async (req, res, next) => {
       }
 
       if (!diagram) {
-         throw { message: 'Diagram not found', statusCode: 404 };
+         throw { error: 'Diagram not found', statusCode: 404 };
       }
 
       return res.json(diagram)
@@ -142,7 +142,7 @@ const updateDiagramById = async (req, res, next) => {
 const deleteDiagramById = async (req, res, next) => {
    try {
       const { id } = req.params
-      if (!id) throw { message: 'Diagram ID is required', statusCode: 400 };
+      if (!id) throw { error: 'Diagram ID is required', statusCode: 400 };
 
       const query = {
          text: 'DELETE FROM diagrams WHERE id = $1 RETURNING *',
@@ -152,7 +152,7 @@ const deleteDiagramById = async (req, res, next) => {
       const result = await pool.query(query);
       const diagram = result.rows[0];
 
-      if (!diagram) throw { message: 'Diagram not found', statusCode: 404 };
+      if (!diagram) throw { error: 'Diagram not found', statusCode: 404 };
 
       res.status(200).json({ message: `Diagram ${diagram.name} deleted successfully` });
 

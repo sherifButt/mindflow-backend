@@ -15,9 +15,9 @@ const errorHandler = (err) => {
   let message = 'Internal Server Error: '+err.message;
 
   // Check if the error has a status code and message
-  if (err.statusCode && err.message) {
+  if (err.statusCode && err.error) {
     statusCode = err.statusCode;
-    message = err.message;
+    message = err.error;
   }
 
   // Check if the error is a mongoDB duplicate key error

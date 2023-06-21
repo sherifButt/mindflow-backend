@@ -52,11 +52,11 @@ const logout = async (req, res, next) => {
     const token = authHeader && authHeader.split(' ')[1];
 
     // Check if there is a token
-    if (!token) throw { message: 'Unauthorized', statusCode: 401 };
+    if (!token) throw { error: 'Unauthorized', statusCode: 401 };
 
     // Verify the token
     const decoded = jwtUtils.verifyToken(token);
-    if (!decoded) throw { message: 'Forbidden', statusCode: 403 };
+    if (!decoded) throw { error: 'Forbidden', statusCode: 403 };
 
 
     // Delete the token from the database
@@ -64,7 +64,7 @@ const logout = async (req, res, next) => {
     
     // if no token was found in the database, return 401 Unauthorized
     if (result.rowCount === 0) {
-      throw { message: 'Unauthorized', statusCode: 401 };
+      throw { error: 'Unauthorized', statusCode: 401 };
     }
 
     return res.status(200).json({ message: 'Logout successful' });
@@ -102,25 +102,25 @@ const register = async (req, res, next) => {
 
   try {
     // check if email and password are provided
-    if (!username || !email || !password) throw { message: 'Username, Email, password and confirm password are required', statusCode: 400 };
+    if (!username || !email || !password) throw { error: 'Username, Email, password and confirm password are required', statusCode: 400 };
 
     // check if username is valid
-    if (!validator.isUsername(username)) throw { message: 'Invalid username, username must be at least 3 characters long and contain only letters and numbers', statusCode: 400 };
+    if (!validator.isUsername(username)) throw { error: 'Invalid username, username must be at least 3 characters long and contain only letters and numbers', statusCode: 400 };
 
     // check if email is valid
-    if (!validator.isEmail(email)) throw { message: 'Invalid email', statusCode: 400 };
+    if (!validator.isEmail(email)) throw { error: 'Invalid email', statusCode: 400 };
 
     // check if password is valid
-    if (!validator.isStrongPassword(password)) throw { message: 'Invalid password, password must be at least 8 characters long and contain at least 1 lowercase, 1 uppercase, 1 number and 1 symbol', statusCode: 400 };
+    if (!validator.isStrongPassword(password)) throw { error: 'Invalid password, password must be at least 8 characters long and contain at least 1 lowercase, 1 uppercase, 1 number and 1 symbol', statusCode: 400 };
 
     // check if password and confirm password match
-    if (password !== confirmPassword) throw { message: 'Password and confirm password do not match', statusCode: 400 };
+    if (password !== confirmPassword) throw { error: 'Password and confirm password do not match', statusCode: 400 };
 
     // check if user already exists
     const rows = await pool.query('SELECT * FROM users WHERE email = $1', [email]);
     if (rows.length > 0) {
 
-      throw { message: 'user [${email}] already exists, chose a different user!', statusCode: 409 };
+      throw { error: 'user [${email}] already exists, chose a different user!', statusCode: 409 };
     }
 
     // hash the password

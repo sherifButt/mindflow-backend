@@ -22,7 +22,11 @@ const createInstructionType = async (req, res, next) => {
       const result = await pool.query(query);
       const instructionType = result.rows[0];
 
-      return res.status(201).json(instructionType);
+      res.data = instructionType;
+      res.statusCode = 201;
+      res.message = 'Instruction type created successfully!';
+
+      next();
    } catch (error) {
       next(error);
    }
@@ -47,9 +51,13 @@ const getInstructionTypeById = async (req, res, next) => {
 
       const result = await pool.query(query);
       const instructionType = result.rows[0];
-      if (!instructionType) throw { error: 'Instruction type not found', statusCode: 404 };
+      if (!instructionType) throw { error: `Instruction type with id:${id} not found!`, statusCode: 404 };
 
-      res.status(200).json(instructionType);
+      res.data = instructionType;
+      res.statusCode = 200;
+      res.message = `Instruction type with id:${id}, retrieved successfully!`;
+
+      next()
 
    } catch (error) {
       next(error);
@@ -89,10 +97,14 @@ const getAllInstructionTypes = async (req, res, next) => {
       // Remove total from the results
       instructionTypes.map(diagram => delete diagram.total);
 
-      res.status(200).json({
-          pagination: pagination,
-          results: instructionTypes
-      });
+      res.data = {
+         pagination: pagination,
+         results: instructionTypes
+      };
+      res.statusCode = 200;
+      res.message = `${pagination.totalItems} instruction types retrieved successfully!`;
+
+      next()
   } catch (error) {
       next(error);
   }
@@ -143,14 +155,15 @@ const updateInstructionTypeById = async (req, res, next) => {
          throw { error: 'Instruction Type not found', statusCode: 404 };
       }
 
-      return res.json(instructionType)
+      res.data = instructionType;
+      res.statusCode = 200;
+      res.message = `Instruction type with id:${id}, updated successfully!`;
+
+      next();
    } catch (error) {
       next(error)
    }
 }
-
-
-
 
 /**
  * Deletes a instruction by its ID.
@@ -173,9 +186,11 @@ const deleteInstructionTypeById = async (req, res, next) => {
 
       if (!instructionType) throw { error: 'InstructionType not found', statusCode: 404 };
 
-      res.status(200).json({ message: `InstructionType ${instructionType.name} deleted successfully` });
+      res.data = null;
+      res.statusCode = 204;
+      res.message = `Instruction type with id:${id}, deleted successfully!`;
 
-
+      next();
       
    } catch (error) {
      next(error)

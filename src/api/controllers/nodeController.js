@@ -23,10 +23,10 @@ const createNode = async (req, res, next) => {
     const node = result.rows[0];
 
     res.data = node;
-     res.statusCode = 201;
-     res.message = 'Node created successfully!';
+    res.statusCode = 201;
+    res.message = 'Node created successfully!';
 
-     next()
+    next()
   } catch (error) {
     next(error);
   }
@@ -58,12 +58,10 @@ const getNodeById = async (req, res, next) => {
     res.message = `Node with id:${id}, retrieved successfully!`;
 
     next()
-
   } catch (error) {
     next(error);
   }
 }
-
 
 /**
  * Retrieves all instructions.
@@ -153,20 +151,18 @@ const updateNodeById = async (req, res, next) => {
     const node = result.rows[0];
 
     if (!node) {
-      throw { error:`Node with id:${id} not found!`, statusCode: 404 };
+      throw { error: `Node with id:${id} not found!`, statusCode: 404 };
     }
 
     res.data = node;
-      res.statusCode = 200;
-      res.message = `Node with id:${id}, updated successfully!`;
+    res.statusCode = 200;
+    res.message = `Node with id:${id}, updated successfully!`;
 
-      next()
+    next()
   } catch (error) {
     next(error)
   }
 }
-
-
 
 
 /**
@@ -190,13 +186,10 @@ const deleteNodeById = async (req, res, next) => {
 
     if (!node) throw { error: 'Node not found', statusCode: 404 };
 
-    res.message=`Node ${node.id} deleted successfully`
+    res.message = `Node ${node.id} deleted successfully`
     res.statusCode = 200;
 
     next()
-
-
-
   } catch (error) {
     next(error)
   }

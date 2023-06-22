@@ -24,7 +24,11 @@ const createDiagram = async (req, res, next) => {
       const result = await pool.query(query);
       const diagram = result.rows[0];
 
-      return res.status(201).json(diagram);
+      res.data = diagram;
+      res.statusCode = 201;
+      res.message = 'Diagram created successfully!';
+
+      next()
    } catch (error) {
       next(error);
    }
@@ -50,7 +54,11 @@ const getDiagramById = async (req, res, next) => {
       const diagram = result.rows[0];
       if (!diagram) throw { error: 'Diagram not found', statusCode: 404 };
 
-      res.status(200).json(diagram);
+      res.data = diagram;
+      res.statusCode = 200;
+      res.message = `Diagram with id:${id}, retrieved successfully!`;
+
+      next()
    } catch (error) {
       next(error);
    }
@@ -64,37 +72,41 @@ const getDiagramById = async (req, res, next) => {
  */
 const getAllDiagrams = async (req, res, next) => {
    try {
-       const page = parseInt(req.query.page) || 1;  // set default page to 1 if it's not available
-       const limit = parseInt(req.query.limit) || 20;  // set default limit to 20 if it's not available
-       const offset = (page - 1) * limit;
+      const page = parseInt(req.query.page) || 1;  // set default page to 1 if it's not available
+      const limit = parseInt(req.query.limit) || 20;  // set default limit to 20 if it's not available
+      const offset = (page - 1) * limit;
 
-       const result = await pool.query('SELECT COUNT(*) OVER() as total, * FROM diagrams ORDER BY id LIMIT $1 OFFSET $2', [limit, offset]);
-       const diagrams = result.rows;
+      const result = await pool.query('SELECT COUNT(*) OVER() as total, * FROM diagrams ORDER BY id LIMIT $1 OFFSET $2', [limit, offset]);
+      const diagrams = result.rows;
 
-       if (!diagrams.length) throw { error: 'No diagrams found', statusCode: 404 };
+      if (!diagrams.length) throw { error: 'No diagrams found', statusCode: 404 };
 
-         // Calculate total pages
-       const totalPages = Math.ceil(diagrams[0].total / limit);
+      // Calculate total pages
+      const totalPages = Math.ceil(diagrams[0].total / limit);
 
-       // Construct a pagination object
-       const pagination = {
-           totalItems: Number(diagrams[0].total),
-           currentPage: page,
-           pageSize: limit,
-           totalPages: totalPages,
-           nextPage: page < totalPages ? page + 1 : null,
-           prevPage: page > 1 ? page - 1 : null
-       }
+      // Construct a pagination object
+      const pagination = {
+         totalItems: Number(diagrams[0].total),
+         currentPage: page,
+         pageSize: limit,
+         totalPages: totalPages,
+         nextPage: page < totalPages ? page + 1 : null,
+         prevPage: page > 1 ? page - 1 : null
+      }
 
-       // Remove total from the results
-       diagrams.map(diagram => delete diagram.total);
+      // Remove total from the results
+      diagrams.map(diagram => delete diagram.total);
 
-       res.status(200).json({
-           pagination: pagination,
-           results: diagrams
-       });
+      res.data = {
+         pagination: pagination,
+         results: nodes
+      }
+      res.statusCode = 200;
+      res.message = `${pagination.totalItems} diagrams retrieved successfully!`;
+
+      next()
    } catch (error) {
-       next(error);
+      next(error);
    }
 }
 
@@ -114,7 +126,7 @@ const updateDiagramById = async (req, res, next) => {
       let updateStatement = 'UPDATE diagrams SET';
       const values = [];
       let valueIndex = 1;
-      
+
       for (const [key, value] of Object.entries(fieldsToUpdate)) {
          updateStatement += ` ${key} = $${valueIndex},`;
          values.push(value);
@@ -125,7 +137,7 @@ const updateDiagramById = async (req, res, next) => {
       if (!fieldsToUpdate.hasOwnProperty('updated_at')) {
          updateStatement += ` updated_at = CURRENT_TIMESTAMP,`;
       }
-      
+
       // Remove trailing comma and append the WHERE clause
       updateStatement = updateStatement.slice(0, -1);
       updateStatement += ` WHERE id = $${valueIndex} RETURNING *`;
@@ -142,7 +154,11 @@ const updateDiagramById = async (req, res, next) => {
          throw { error: 'Diagram not found', statusCode: 404 };
       }
 
-      return res.json(diagram)
+      res.data = diagram;
+      res.statusCode = 200;
+      res.message = `Diagram with id:${id}, updated successfully!`;
+
+      next()
    } catch (error) {
       next(error)
    }
@@ -169,12 +185,13 @@ const deleteDiagramById = async (req, res, next) => {
 
       if (!diagram) throw { error: 'Diagram not found', statusCode: 404 };
 
-      res.status(200).json({ message: `Diagram ${diagram.name} deleted successfully` });
+      res.message = `Diagram ${diagram.name} deleted successfully`
+      res.statusCode = 200;
 
+      next()
 
-      
    } catch (error) {
-     next(error)
+      next(error)
    }
 }
 

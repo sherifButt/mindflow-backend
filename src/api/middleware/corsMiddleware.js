@@ -1,7 +1,3 @@
-
-
-
-
 /**
  * Handles CORS (Cross-Origin Resource Sharing) for the application.
  * @param {Object} app - Express application object.

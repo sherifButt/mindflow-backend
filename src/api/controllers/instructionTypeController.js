@@ -21,7 +21,6 @@ const createInstructionType = async (req, res, next) => {
 
       const result = await pool.query(query);
       const instructionType = result.rows[0];
-      instructionType.parameters = JSON.parse(instructionType.parameters);
 
       return res.status(201).json(instructionType);
    } catch (error) {
@@ -50,9 +49,6 @@ const getInstructionTypeById = async (req, res, next) => {
       const instructionType = result.rows[0];
       if (!instructionType) throw { error: 'Instruction type not found', statusCode: 404 };
 
-      // Assuming parameters is a JSON string
-      instructionType.parameters = JSON.parse(instructionType.parameters);
-
       res.status(200).json(instructionType);
 
    } catch (error) {
@@ -78,13 +74,11 @@ const getAllInstructionTypes = async (req, res, next) => {
 
       if (!instructionTypes.length) throw { error: 'No instructionTypes found', statusCode: 404 };
 
-      instructionTypes.map(diagram => diagram.parameters = JSON.parse(diagram.parameters))
-
       const totalPages = Math.ceil(instructionTypes[0].total / limit);
 
       // Construct a pagination object
       const pagination = {
-          totalItems: instructionTypes[0].total,
+          totalItems: Number(instructionTypes[0].total),
           currentPage: page,
           pageSize: limit,
           totalPages: totalPages,

@@ -23,7 +23,6 @@ const createDiagram = async (req, res, next) => {
 
       const result = await pool.query(query);
       const diagram = result.rows[0];
-      diagram.diagram_data = JSON.parse(diagram.diagram_data);
 
       return res.status(201).json(diagram);
    } catch (error) {
@@ -51,11 +50,7 @@ const getDiagramById = async (req, res, next) => {
       const diagram = result.rows[0];
       if (!diagram) throw { error: 'Diagram not found', statusCode: 404 };
 
-      diagram.diagram_data = JSON.parse(diagram.diagram_data);
-
       res.status(200).json(diagram);
-
-
    } catch (error) {
       next(error);
    }
@@ -78,13 +73,12 @@ const getAllDiagrams = async (req, res, next) => {
 
        if (!diagrams.length) throw { error: 'No diagrams found', statusCode: 404 };
 
-       diagrams.map(diagram => diagram.diagram_data = JSON.parse(diagram.diagram_data))
-
+         // Calculate total pages
        const totalPages = Math.ceil(diagrams[0].total / limit);
 
        // Construct a pagination object
        const pagination = {
-           totalItems: diagrams[0].total,
+           totalItems: Number(diagrams[0].total),
            currentPage: page,
            pageSize: limit,
            totalPages: totalPages,
@@ -143,10 +137,6 @@ const updateDiagramById = async (req, res, next) => {
       });
 
       const diagram = result.rows[0];
-
-      if (diagram && diagram.diagram_data) {
-         diagram.diagram_data = JSON.parse(diagram.diagram_data);
-      }
 
       if (!diagram) {
          throw { error: 'Diagram not found', statusCode: 404 };

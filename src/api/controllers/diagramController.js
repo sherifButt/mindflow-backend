@@ -1,6 +1,4 @@
 const { pool } = require('../../config/db');
-const gpt4API = require('../../utils/gpt4API')
-
 
 /**
  * Creates a new diagram.
